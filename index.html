@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<meta charset="UTF-8">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<title>YI 4K+ RTSP Stream QR Generator</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<script type="text/javascript" src="qrcode.min.js"></script>
+<script>
+var qrcode = new QRCode("qrcode");
+
+$('input[type=text]').on('keydown', function(e) {
+    if (e.which == 13) {
+        e.preventDefault();
+       	makeCode();
+    }
+});
+function makeCode () {      
+	var ssid = $("#ssid").val();
+	var ip = $("#ip").val();
+	var res = $("#res").val();
+	var pwd = $("#pwd").val();
+
+    if (!ssid) {
+	    $("#modal").modal("toggle");
+		$('#info').html("<h3>Please input at least SSID</h3>");
+		return;
+    }
+    
+    qrcode.makeCode('{"res":"'+res+'","sign":"","url":"rtsp://'+ip+'/live","ak":"","ssid":"'+ssid+ '","pwd":"'+pwd+'","rate":"","dur":""}');
+		$("#info").empty();
+		$('#info').append("<br />SSID: "+ssid+"<br />").append("IP: "+ip+"<br />").append("Resolution: "+res+"<br />").append("Pass: "+pwd);
+	    $("#modal").modal("toggle");
+}
+</script>
+<style>
+body {
+  background-color: #2F2727;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#1a82f7), to(#2F2727));
+  background: -webkit-radial-gradient(circle, #1a82f7, #2F2727);
+  background: -moz-radial-gradient(circle, #1a82f7, #2F2727);
+  background: -ms-radial-gradient(circle, #1a82f7, #2F2727);
+  font-family: sans-serif;
+}
+.page {
+    text-align: center;
+    margin: auto;
+    margin-top: 20px;
+    min-width: 50px;
+    max-width: 400px;
+    border: 3px solid #797979;
+    padding: 10px;
+    background: #f9f9f9;
+    padding-bottom: 25px;
+    border-radius: 10px;
+    padding-top: 25px;
+    padding-left: 55px;
+    padding-right: 55px;
+}
+#qrcode {
+    margin-left: 100px;
+}
+input {
+    color: red;
+}
+.header {
+    margin-top: 15px;
+    font-weight: bold;
+}
+#infobar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 9.5s;
+    animation: fadein 0.5s, fadeout 0.5s 9.5s;
+}
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+.input-group {
+    margin-bottom: 4px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="page">
+<h2>YI 4K+ RTSP Stream QR Generator</h2><br />
+	  <div class="input-group">
+	      <span class="input-group-addon">SSID</span>
+            <input type="text" pattern=".{3,}" id="ssid" name="ssid" class="form-control" placeholder="WiFi SSID" >
+      </div>
+	  <div class="input-group">
+	      <span class="input-group-addon">PWD</span>
+            <input type="text" id="pwd" name="pwd" class="form-control" placeholder="WiFi PASSWORD">
+      </div>
+	  <div class="input-group">
+	        <span class="input-group-addon">IP</span>
+            <input type="text" id="ip" name="ip" class="form-control" value="127.0.0.1" placeholder="127.0.0.1">
+      </div>
+      <div class="form-group">
+			<label for="res"><div class="header">Resolution</div></label>
+      <select class="form-control" id="res" name="res">
+        <option>1080p</option>
+        <option selected>720p</option>
+        <option>480p</option>
+        <option>360p</option>
+      </select>
+      </div>
+        <div>
+        <br />
+            <input type="submit" class="btn btn-danger" id="submitButton" name="submitButton" value="Generate QR" onClick="makeCode()">
+        </div>
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+				Scan QR with YI 4K+
+            </div>
+            <div class="modal-body">
+            	<div id="qrcode"></div>
+            	<div id="info"></div>
+			</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">Exit!</button>
+        </div>
+        </div>
+    </div>
+</div>
+<div id="infobar"></div>
+</div>
+</div>
+</body>
+</html>
